@@ -1,0 +1,17 @@
+{
+  "name": "bookfee--server",
+  "version": "1.0.0",
+  "description": "This is a website server which will be used for buy and sell old books. Server will be used to get some some api to get and post also delete user and books data.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "MD Mahiuddin Tuhin",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongodb": "^4.12.1",
+    "nodemon": "^2.0.20"
+  }
+}
