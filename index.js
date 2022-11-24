@@ -20,24 +20,39 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const BookCollection = client.db("bookfee").collection("books");
-
+    const BooksCategories = client.db("bookfee").collection("books-cat");
+    // api to add books by user or admin
     app.post("/addBooks", async (req, res, next) => {
       const doc = req.body;
       console.log(doc);
-
-      //   const result = await BookCollection.insertOne(doc);
-      //   console.log(`A document was inserted with _id: ${result.insertedId}`);
     });
 
+    // api to get all books added earlier
     app.get("/allBooks", async (req, res, next) => {});
 
+    // api to get all books Books Categories
+    app.get("/booksCat", async (req, res, next) => {
+      const query = {};
+      const cursor = BooksCategories.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // api to delete previously added books
     app.delete("/deleteBook", (req, res, next) => {});
+    // api to edit single books details
     app.patch("/editBooks/:id", async (req, res, next) => {});
+    // api to add single user details
     app.post("/user", async (req, res, next) => {});
+    // api to delete single user
     app.delete("/deleteUser/:id", async (req, res, next) => {});
+    // api to add single user single review
     app.post("/userReview/:email", async (req, res, next) => {});
+    // api to delete single user single review
     app.delete("/deleteUserReview/:id", async (req, res, next) => {});
+    // api to get all review based on email or emails
     app.get("/usersReview/:email", async (req, res, next) => {});
+    // api to edit single user single Review
     app.patch("/usersReview/:email", async (req, res, next) => {});
   } finally {
   }
