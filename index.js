@@ -195,13 +195,39 @@ async function run() {
       res.send(result);
     });
 
+    // making an advertise
+    app.put("/advertise/:id", async (req, res) => {
+      console.log("first");
+      const id = req.params.id;
+
+      const filter = {
+        _id: ObjectId(id),
+      };
+      const options = { upsert: true };
+
+      const updatedDoc = {
+        $set: {
+          advertise: "true",
+        },
+      };
+
+      const result = await userCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      console.log(result);
+      res.send(result);
+    });
+
     // api to delete single user
-    app.delete("/deleteUser/:id", async (req, res, next) => {
+    app.delete("/deleteUser/:id", verifyJWT, async (req, res, next) => {
       const id = req.params.id;
       const query = {
         _id: ObjectId(id),
       };
-      console.log(query);
+      const result = await userCollection.deleteOne(query);
+      res.send(result);
     });
     // api to add single user single review
     app.post("/userReview/:email", async (req, res, next) => {});
