@@ -2,6 +2,7 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const { query } = require("express");
 require("dotenv").config();
 const app = express();
 app.use(cors());
@@ -28,7 +29,7 @@ async function run() {
     const userOrderCollection = client.db("bookfee").collection("userOrder");
 
     // CONFIFG jwt token
-    app.get("/jwt", verifyJWT, async (req, res, next) => {
+    app.get("/jwt", async (req, res, next) => {
       const email = req.query.email;
       const query = {
         email: email,
@@ -49,7 +50,8 @@ async function run() {
 
     function verifyJWT(req, res, next) {
       const token = req?.headers?.authorization?.split(" ")[1];
-
+      // console.log(process.env.ACCESS_TOKEN_SECRET);
+      // console.log(token);
       if (token) {
         next();
       } else {
@@ -62,12 +64,6 @@ async function run() {
       //   return res.status(401).send("Unauthorized request");
       // }
     }
-
-    // api to add books by user or admin
-    app.post("/addBooks", async (req, res, next) => {
-      const doc = req.body;
-      console.log(doc);
-    });
 
     // api to get all books added earlier
     app.get("/allBooks", async (req, res, next) => {});
@@ -179,14 +175,34 @@ async function run() {
 
     // api to add  user book by add product page
     app.post("/addBook", verifyJWT, async (req, res, next) => {
+      console.log("doc");
       const doc = req.body;
 
       const result = await BookCollection.insertOne(doc);
       res.send(result);
     });
 
+    // get my products by email
+    app.get("/myproducts/:email", async (req, res) => {
+      const email = req.params.email;
+
+      const query = {
+        sellerEmail: email,
+      };
+
+      const cursor = BookCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     // api to delete single user
-    app.delete("/deleteUser/:id", async (req, res, next) => {});
+    app.delete("/deleteUser/:id", async (req, res, next) => {
+      const id = req.params.id;
+      const query = {
+        _id: ObjectId(id),
+      };
+      console.log(query);
+    });
     // api to add single user single review
     app.post("/userReview/:email", async (req, res, next) => {});
     // api to delete single user single review
