@@ -177,6 +177,14 @@ async function run() {
       }
     });
 
+    // api to add  user book by add product page
+    app.post("/addBook", verifyJWT, async (req, res, next) => {
+      const doc = req.body;
+
+      const result = await BookCollection.insertOne(doc);
+      res.send(result);
+    });
+
     // api to delete single user
     app.delete("/deleteUser/:id", async (req, res, next) => {});
     // api to add single user single review
