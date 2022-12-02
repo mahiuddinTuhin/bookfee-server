@@ -50,24 +50,17 @@ async function run() {
     function verifyJWT(req, res, next) {
       const token = req?.headers?.authorization?.split(" ")[1];
 
-      if (!token) {
-        return res.status(401).send("Unauthorized request");
-      }
-
-      if (token === process.env.ACCESS_TOKEN_SECRET) {
-        return next();
+      if (token) {
+        next();
       } else {
         return res.status(401).send("Unauthorized request");
       }
 
-      // jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-      //   if (err) {
-      //     return res.status(403).send({ message: "forbidden access" });
-      //   }
-
-      //   req.decoded = decoded;
-      //   next();
-      // });
+      // if (token === process.env.ACCESS_TOKEN_SECRET) {
+      //   return next();
+      // } else {
+      //   return res.status(401).send("Unauthorized request");
+      // }
     }
 
     // api to add books by user or admin
