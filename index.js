@@ -1,6 +1,7 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const app = express();
 app.use(cors());
@@ -23,6 +24,51 @@ async function run() {
   try {
     const BookCollection = client.db("bookfee").collection("books");
     const BooksCategories = client.db("bookfee").collection("books-cat");
+    const userCollection = client.db("bookfee").collection("user");
+    const userOrderCollection = client.db("bookfee").collection("userOrder");
+
+    // CONFIFG jwt token
+    app.get("/jwt", verifyJWT, async (req, res, next) => {
+      const email = req.query.email;
+      const query = {
+        email: email,
+      };
+      const user = await userCollection.findOne(query);
+
+      if (user) {
+        const token = jwt.sign({ email }, process.env.ACCESS_TOKEN_SECRET, {
+          expiresIn: "1h",
+        });
+        res.send({ accessToken: token });
+      } else {
+        res.status(403).send({ accessToken: "" });
+      }
+    });
+
+    // verify jwt function/middleware
+
+    function verifyJWT(req, res, next) {
+      const token = req?.headers?.authorization?.split(" ")[1];
+
+      if (!token) {
+        return res.status(401).send("Unauthorized request");
+      }
+
+      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+        if (err) {
+          return res.status(403).send("forbidden access");
+        }
+        req.decoded = decoded;
+        next();
+      });
+
+      // if (token === process.env.ACCESS_TOKEN_SECRET) {
+      //   return next();
+      // } else {
+      //   return res.status(401).send("Unauthorized request");
+      // }
+    }
+
     // api to add books by user or admin
     app.post("/addBooks", async (req, res, next) => {
       const doc = req.body;
@@ -40,12 +86,72 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/category/:id", verifyJWT, async (req, res, next) => {
+      const params = req.params.id;
+
+      const query = { cat_id: params };
+
+      // finding all books belongs to a cat
+      const cursor = BookCollection.find(query);
+      const result = await cursor.toArray();
+
+      res.send(result);
+    });
     // api to delete previously added books
     app.delete("/deleteBook", (req, res, next) => {});
     // api to edit single books details
     app.patch("/editBooks/:id", async (req, res, next) => {});
+
     // api to add single user details
-    app.post("/user", async (req, res, next) => {});
+    app.post("/user", verifyJWT, async (req, res, next) => {
+      const doc = req.body;
+
+      const result = await userCollection.insertOne(doc);
+      res.send(result);
+    });
+
+    // get all user data
+    app.get("/alluser", async (req, res, next) => {
+      const query = {};
+      const cursor = userCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // update user details and activity
+
+    app.post("/userOrder", async (req, res, next) => {
+      const doc = req.body;
+      const newId = doc.bookId;
+      // const id = ObjectId(newId);
+      const query = {
+        bookId: newId,
+      };
+      const result = await userOrderCollection.findOne(query);
+      // console.log(cursor);
+
+      if (!result) {
+        console.log("book id is not found");
+        await userOrderCollection.insertOne(doc);
+      } else {
+        console.log("book is already sold");
+      }
+    });
+
+    // making an admin
+    app.put("/user/admin/:id", async (req, res) => {
+      const id = req.params.id;
+
+      const query = {
+        _id: ObjectId(id),
+      };
+
+      const adminFinding = userCollection.findOne(query);
+
+      // console.log(adminFinding);
+      res.send(adminFinding);
+    });
+
     // api to delete single user
     app.delete("/deleteUser/:id", async (req, res, next) => {});
     // api to add single user single review
