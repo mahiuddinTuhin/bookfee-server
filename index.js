@@ -132,18 +132,49 @@ async function run() {
       }
     });
 
+    // current user details
+    app.get("/currentUser/:email", verifyJWT, async (req, res) => {
+      const email = req.params.email;
+      const query = {
+        email: email,
+      };
+      const result = await userCollection.findOne(query);
+      res.send(result);
+    });
+
     // making an admin
-    app.put("/user/admin/:id", async (req, res) => {
-      const id = req.params.id;
+    app.put("/user/admin/:id", verifyJWT, async (req, res) => {
+      const email = req.headers.email;
 
       const query = {
-        _id: ObjectId(id),
+        email: email,
       };
 
-      const adminFinding = userCollection.findOne(query);
+      const isAdmin = await userCollection.findOne(query);
+      console.log(isAdmin.role);
 
-      // console.log(adminFinding);
-      res.send(adminFinding);
+      if (isAdmin.role === "admin") {
+        const id = req.params.id;
+
+        const filter = {
+          _id: ObjectId(id),
+        };
+        const options = { upsert: true };
+
+        const updatedDoc = {
+          $set: {
+            role: "admin",
+          },
+        };
+
+        const result = await userCollection.updateOne(
+          filter,
+          updatedDoc,
+          options
+        );
+
+        res.send(result);
+      }
     });
 
     // api to delete single user
