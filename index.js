@@ -52,15 +52,22 @@ async function run() {
 
       if (!token) {
         return res.status(401).send("Unauthorized request");
-      } else {
-        return next();
       }
 
-      // if (token === process.env.ACCESS_TOKEN_SECRET) {
-      //   return next();
-      // } else {
-      //   return res.status(401).send("Unauthorized request");
-      // }
+      if (token === process.env.ACCESS_TOKEN_SECRET) {
+        return next();
+      } else {
+        return res.status(401).send("Unauthorized request");
+      }
+
+      // jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+      //   if (err) {
+      //     return res.status(403).send({ message: "forbidden access" });
+      //   }
+
+      //   req.decoded = decoded;
+      //   next();
+      // });
     }
 
     // api to add books by user or admin
