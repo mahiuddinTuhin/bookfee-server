@@ -196,9 +196,9 @@ async function run() {
     });
 
     // making an advertise
-    app.put("/advertise/:id", async (req, res) => {
-      console.log("first");
+    app.put("/advertise/:id", verifyJWT, async (req, res) => {
       const id = req.params.id;
+      // console.log(id);
 
       const filter = {
         _id: ObjectId(id),

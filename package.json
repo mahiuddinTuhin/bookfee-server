@@ -4,6 +4,8 @@
   "description": "This is a website server which will be used for buy and sell old books. Server will be used to get some some api to get and post also delete user and books data.",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "build": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "MD Mahiuddin Tuhin",
