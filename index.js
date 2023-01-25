@@ -10,7 +10,7 @@ app.use(express.json());
 const port = process.env.PORT;
 
 app.get("/", (req, res, next) => {
-  res.send("server is running well");
+  res.send(`server is running well on port: ${process.env.PORT}`);
 });
 
 // config mongodbS
