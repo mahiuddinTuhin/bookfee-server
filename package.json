@@ -16,6 +16,17 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.12.1",
-    "nodemon": "^2.0.20"
-  }
+    "nodemon": "^2.0.20",
+    "vercel": "^28.13.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mahiuddinTuhin/bookfee-server.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/mahiuddinTuhin/bookfee-server/issues"
+  },
+  "homepage": "https://github.com/mahiuddinTuhin/bookfee-server#readme"
 }

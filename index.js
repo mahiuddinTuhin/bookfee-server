@@ -13,6 +13,11 @@ app.get("/", (req, res, next) => {
   res.send(`server is running well on port: ${process.env.PORT}`);
 });
 
+/* const crypto = require("crypto");
+
+const id = crypto.randomBytes(64).toString("hex");
+console.log(id); */
+
 // config mongodbS
 const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASSWORD}@cluster0.yfdgs6q.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -71,6 +76,7 @@ async function run() {
 
     // api to get all books Books Categories
     app.get("/booksCat", async (req, res, next) => {
+      console.log("bookscat");
       const query = {};
       const cursor = BooksCategories.find(query);
       const result = await cursor.toArray();
