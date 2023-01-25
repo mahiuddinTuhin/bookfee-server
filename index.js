@@ -52,23 +52,14 @@ async function run() {
       }
     });
 
-    // verify jwt function/middleware
-
     function verifyJWT(req, res, next) {
       const token = req?.headers?.authorization?.split(" ")[1];
-      // console.log(process.env.ACCESS_TOKEN_SECRET);
-      // console.log(token);
+
       if (token) {
         next();
       } else {
         return res.status(401).send("Unauthorized request");
       }
-
-      // if (token === process.env.ACCESS_TOKEN_SECRET) {
-      //   return next();
-      // } else {
-      //   return res.status(401).send("Unauthorized request");
-      // }
     }
 
     // api to get all books added earlier
