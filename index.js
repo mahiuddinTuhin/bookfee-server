@@ -13,10 +13,7 @@ app.get("/", (req, res, next) => {
   res.send(`server is running well on port: ${process.env.PORT}`);
 });
 
-/* const crypto = require("crypto");
 
-const id = crypto.randomBytes(64).toString("hex");
-console.log(id); */
 
 // config mongodbS
 const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASSWORD}@cluster0.yfdgs6q.mongodb.net/?retryWrites=true&w=majority`;
