@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 const port = process.env.PORT || 5002;
 
-app.get("/", (req, res, next) => {
+app.get("/", cors(), (req, res, next) => {
   res.send(`server is running well on port: ${process.env.PORT}`);
 });
 
@@ -30,7 +30,7 @@ async function run() {
     const userOrderCollection = client.db("bookfee").collection("userOrder");
 
     // CONFIFG jwt token
-    app.get("/jwt", async (req, res, next) => {
+    app.get("/jwt", cors(), async (req, res, next) => {
       const email = req.query.email;
       const query = {
         email: email,
@@ -58,20 +58,19 @@ async function run() {
     }
 
     // api to get all books added earlier
-    app.get("/ab", async (req, res, next) => {
+    app.get("/ab", cors(), async (req, res, next) => {
       res.send("all books all books");
     });
 
     // api to get all books Books Categories
-    app.get("/booksCat", async (req, res, next) => {
-      console.log("bookscat");
+    app.get("/booksCat", cors(), async (req, res, next) => {
       const query = {};
       const cursor = BooksCategories.find(query);
       const result = await cursor.toArray();
       res.send(result);
     });
 
-    app.get("/category/:id", verifyJWT, async (req, res, next) => {
+    app.get("/category/:id", cors(), verifyJWT, async (req, res, next) => {
       const params = req.params.id;
 
       const query = { cat_id: params };
@@ -83,12 +82,12 @@ async function run() {
       res.send(result);
     });
     // api to delete previously added books
-    app.delete("/deleteBook", (req, res, next) => {});
+    app.delete("/deleteBook", cors(), (req, res, next) => {});
     // api to edit single books details
-    app.patch("/editBooks/:id", async (req, res, next) => {});
+    app.patch("/editBooks/:id", cors(), async (req, res, next) => {});
 
     // api to add single user details
-    app.post("/user", verifyJWT, async (req, res, next) => {
+    app.post("/user", cors(), verifyJWT, async (req, res, next) => {
       const doc = req.body;
 
       const result = await userCollection.insertOne(doc);
@@ -96,7 +95,7 @@ async function run() {
     });
 
     // get all user data
-    app.get("/alluser", async (req, res, next) => {
+    app.get("/alluser", cors(), async (req, res, next) => {
       const query = {};
       const cursor = userCollection.find(query);
       const result = await cursor.toArray();
@@ -105,7 +104,7 @@ async function run() {
 
     // update user details and activity
 
-    app.post("/userOrder", async (req, res, next) => {
+    app.post("/userOrder", cors(), async (req, res, next) => {
       const doc = req.body;
       const newId = doc.bookId;
       // const id = ObjectId(newId);
@@ -124,7 +123,7 @@ async function run() {
     });
 
     // current user details
-    app.get("/currentUser/:email", verifyJWT, async (req, res) => {
+    app.get("/currentUser/:email", cors(), verifyJWT, async (req, res) => {
       const email = req.params.email;
       const query = {
         email: email,
@@ -134,7 +133,7 @@ async function run() {
     });
 
     // making an admin
-    app.put("/user/admin/:id", verifyJWT, async (req, res) => {
+    app.put("/user/admin/:id", cors(), verifyJWT, async (req, res) => {
       const email = req.headers.email;
 
       const query = {
@@ -169,7 +168,7 @@ async function run() {
     });
 
     // api to add  user book by add product page
-    app.post("/addBook", verifyJWT, async (req, res, next) => {
+    app.post("/addBook", cors(), verifyJWT, async (req, res, next) => {
       console.log("doc");
       const doc = req.body;
 
@@ -178,7 +177,7 @@ async function run() {
     });
 
     // get my products by email
-    app.get("/myproducts/:email", async (req, res) => {
+    app.get("/myproducts/:email", cors(), async (req, res) => {
       const email = req.params.email;
 
       const query = {
@@ -191,7 +190,7 @@ async function run() {
     });
 
     // making an advertise
-    app.put("/advertise/:id", verifyJWT, async (req, res) => {
+    app.put("/advertise/:id", cors(), verifyJWT, async (req, res) => {
       const id = req.params.id;
       // console.log(id);
 
@@ -216,7 +215,7 @@ async function run() {
     });
 
     // api to delete single user
-    app.delete("/deleteUser/:id", verifyJWT, async (req, res, next) => {
+    app.delete("/deleteUser/:id", cors(), verifyJWT, async (req, res, next) => {
       const id = req.params.id;
       const query = {
         _id: ObjectId(id),
@@ -237,9 +236,5 @@ async function run() {
 }
 
 run().catch(console.log);
-
-app.get("/", async (req, res) => {
-  res.send("Bookfee server is running");
-});
 
 app.listen(port, () => console.log(`bookfee server running on ${port}`));
