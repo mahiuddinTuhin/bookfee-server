@@ -7,13 +7,11 @@ require("dotenv").config();
 const app = express();
 app.use(cors());
 app.use(express.json());
-const port = process.env.PORT;
+const port = process.env.PORT || 5002;
 
 app.get("/", (req, res, next) => {
   res.send(`server is running well on port: ${process.env.PORT}`);
 });
-
-
 
 // config mongodbS
 const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASSWORD}@cluster0.yfdgs6q.mongodb.net/?retryWrites=true&w=majority`;
@@ -236,8 +234,10 @@ async function run() {
   }
 }
 
-run().catch(console.dir);
+run().catch(console.log);
 
-app.listen(port, () => {
-  console.log(`Server is running on port: ${port}`);
+app.get("/", async (req, res) => {
+  res.send("Bookfee server is running");
 });
+
+app.listen(port, () => console.log(`bookfee server running on ${port}`));
