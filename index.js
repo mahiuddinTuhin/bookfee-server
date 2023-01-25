@@ -13,8 +13,9 @@ app.get("/", (req, res, next) => {
   res.send("server is running well");
 });
 
-// config mongodb
+// config mongodbS
 const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASSWORD}@cluster0.yfdgs6q.mongodb.net/?retryWrites=true&w=majority`;
+
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
