@@ -58,7 +58,9 @@ async function run() {
     }
 
     // api to get all books added earlier
-    app.get("/allBooks", async (req, res, next) => {});
+    app.get("/ab", async (req, res, next) => {
+      res.send("all books all books");
+    });
 
     // api to get all books Books Categories
     app.get("/booksCat", async (req, res, next) => {
